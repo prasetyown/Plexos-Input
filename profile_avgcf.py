@@ -3,17 +3,17 @@ import pandas as pd
 import numpy as np
 
 #Set the output row, 365 for a year, 4380 for 10 years
-row_output=int(input("Enter the row number (day) for output"))
+row_output=int(input("Enter the row number (day) for output: "))
 
 #Set number of year
-tahun_awal=int(input("Enter the first year of the load profile"))
-tahun_akhir=int(input("Enter the last year of the load profile"))
+tahun_awal=int(input("Enter the first year of the load profile: "))
+tahun_akhir=int(input("Enter the last year of the load profile: "))
 tahun=range(tahun_awal,tahun_akhir+1)
 
 #Set output columns
 output_cols=['Year','Month','Day', 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24]
 
-def output(row_output):
+def output():
 
     sheet=pd.ExcelFile("Profil Wind.xlsx").sheet_names[1:]
 
@@ -52,4 +52,7 @@ def output(row_output):
         output.iloc[0:row_output+1, 3:]=input
 
         #Save output into csv
-        output.to_csv(f'wind_profile_csv\{sheets}.csv', index=False)
+        output.to_csv(f'wind_profile_csv\{sheets}.csv', index=False, sep=';')
+
+#Calling function
+output()
