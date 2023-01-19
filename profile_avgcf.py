@@ -6,7 +6,9 @@ import numpy as np
 row_output=int(input("Enter the row number (day) for output"))
 
 #Set number of year
-tahun=range(2021,2033)
+tahun_awal=int(input("Enter the first year of the load profile"))
+tahun_akhir=int(input("Enter the last year of the load profile"))
+tahun=range(tahun_awal,tahun_akhir+1)
 
 #Set output columns
 output_cols=['Year','Month','Day', 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24]
