@@ -2,13 +2,23 @@
 import pandas as pd
 import numpy as np
 
-#Set the output row, 365 for a year, 4380 for 10 years
+#Set the output row, 365 for a year, 4380 for 12 years, 3650 for 10 years
 row_output=int(input("Enter the row number (day) for output: "))
 
 #Set number of year
 tahun_awal=int(input("Enter the first year of the load profile: "))
 tahun_akhir=int(input("Enter the last year of the load profile: "))
 tahun=range(tahun_awal,tahun_akhir+1)
+
+#Year length
+tahun_len=len(tahun)
+
+#Leap date addition
+leap_count=0
+
+for i in tahun:
+    if i%4==0:
+        leap_count+=1
 
 #Set output columns
 output_cols=['Year','Month','Day', 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24]
@@ -32,7 +42,7 @@ def output():
         df_tahun['Tahun']=pd.to_datetime(df_tahun['Tahun'], format='%Y')
         
         #Splitting to year, months, day
-        date_year=pd.date_range(start=df_tahun['Tahun'][0], periods=row_output+3, freq='D')
+        date_year=pd.date_range(start=df_tahun['Tahun'][0], periods=row_output+leap_count, freq='D')
         df_date=pd.DataFrame(date_year, columns=['Date']).astype(str)
         df_date[['Year','Month','Day']]=df_date['Date'].str.split('-', expand=True)
         df_date=df_date[['Year','Month','Day']]
@@ -47,9 +57,13 @@ def output():
         output['Day']=df_date.iloc[:,2]
 
         #Resize input
-        input=pd.concat([df.iloc[:,4]]*12, ignore_index=True).values
+        input=pd.concat([df.iloc[:,4]]*tahun_len, ignore_index=True).values
         input.resize(row_output,24)
         output.iloc[0:row_output+1, 3:]=input
+
+        #Remap decimal separators into commas
+        for c in output.iloc[:, 3:].columns:
+            output[c]=output[c].apply(lambda x: str(x).replace('.',','))
 
         #Save output into csv
         output.to_csv(f'wind_profile_csv\{sheets}.csv', index=False, sep=';')
